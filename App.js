@@ -6,15 +6,18 @@
  * @flow strict-local
  */
 
-import React from 'react';
+import React, {useState} from 'react';
 import type {Node} from 'react';
 import {
   Dimensions,
   SafeAreaView,
   ScrollView,
   StatusBar,
+  StyleSheet,
   Text,
+  TouchableOpacity,
   useColorScheme,
+  View,
 } from 'react-native';
 import Video from 'react-native-video';
 
@@ -32,6 +35,7 @@ const uri = hevcUri;
 // const uri = dolbyHevcUri;
 
 const App: () => Node = () => {
+  const [error, setError] = useState('');
   const isDarkMode = useColorScheme() === 'dark';
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
@@ -45,7 +49,11 @@ const App: () => Node = () => {
         style={backgroundStyle}>
         <Text>{uri}</Text>
         <Video
-          onError={err => console.log(err)}
+          onLoad={() => setError('')}
+          onError={err => {
+            console.log(err);
+            setError(JSON.stringify(err));
+          }}
           source={{
             uri,
           }}
@@ -56,6 +64,7 @@ const App: () => Node = () => {
             backgroundColor: '#fb0',
           }}
         />
+        <Text>{error}</Text>
       </ScrollView>
     </SafeAreaView>
   );
