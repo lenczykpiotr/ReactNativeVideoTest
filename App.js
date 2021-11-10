@@ -53,6 +53,7 @@ const AuthApp: () => Node = () => {
   const [user, setUser] = useState(null);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [showVideo, setShowVideo] = useState(true);
   const initAuth = async () => {
     try {
       setIsInit(true);
@@ -88,11 +89,13 @@ const AuthApp: () => Node = () => {
 
   const logout = async () => {
     setIsLoading(true);
+    setShowVideo(false);
     try {
       await revokeAccessToken(); // optional
       await revokeIdToken(); // optional
       await clearTokens();
       setUser(null);
+      setShowVideo(true);
     } catch (err) {
       console.log(err);
     } finally {
@@ -105,12 +108,14 @@ const AuthApp: () => Node = () => {
   return (
     <SafeAreaView>
       <ScrollView>
-        <Video
-          source={{
-            uri: 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
-          }}
-          style={{width: 400, height: 300}}
-        />
+        {showVideo && !isLoading && (
+          <Video
+            source={{
+              uri: 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
+            }}
+            style={{width: 400, height: 300}}
+          />
+        )}
         {isInit && <Text>init...</Text>}
         {isLoading && <Text>loading...</Text>}
         {user && (
