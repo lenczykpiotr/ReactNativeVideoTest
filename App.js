@@ -48,7 +48,7 @@ const config = {
 };
 
 const AuthApp: () => Node = () => {
-  const [isInit, setIsInit] = useState(false);
+  const [isInit, setIsInit] = useState(true);
   const [isLoading, setIsLoading] = useState(isLoading);
   const [user, setUser] = useState(null);
   const [username, setUsername] = useState('');
@@ -57,6 +57,12 @@ const AuthApp: () => Node = () => {
     try {
       setIsInit(true);
       await createConfig(config.oidc);
+    } catch (err) {
+      console.log(err);
+    }
+    try {
+      const oktaUser = await getUser();
+      setUser(oktaUser);
     } catch (err) {
       console.log(err);
     } finally {
@@ -105,6 +111,7 @@ const AuthApp: () => Node = () => {
           }}
           style={{width: 400, height: 300}}
         />
+        {isInit && <Text>init...</Text>}
         {isLoading && <Text>loading...</Text>}
         {user && (
           <Text style={{fontSize: 30, fontWeight: 'bold'}}>{user.email}</Text>
